@@ -1,4 +1,4 @@
-name: CI-MLflow-Workflow-Advance
+name: CI-MLflow-Workflow-Docker
 
 on:
   push:
