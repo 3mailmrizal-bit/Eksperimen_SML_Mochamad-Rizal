@@ -35,18 +35,16 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Debug - Check Model Path
+      - name: Build Docker Image
         run: |
-          echo "=== Checking mlruns structure ==="
-          find mlruns -type d | head -20
-          
-          echo -e "\n=== Looking for artifacts folder ==="
-          find mlruns -type d -name "artifacts"
-          
-          echo -e "\n=== Checking ci_model folder ==="
-          find mlruns -type d -name "ci_model"
-          
-          echo -e "\n=== Latest run folder ==="
-          LATEST_RUN=$(find mlruns -type d -name "[0-9a-f]*" -path "*/mlruns/*" | sort -r | head -n 1)
-          echo "Latest run: $LATEST_RUN"
-          ls -la $LATEST_RUN/artifacts/ || echo "No artifacts folder found"
+	        MODEL_PATH=$(find mlruns -name "MLmodel" -exec dirname {} \;)
+          echo "Model path ditemukan di: $MODEL_PATH"
+          if [ -z "$MODEL_PATH" ]; then
+            echo "Error: Model tidak ditemukan!"
+            exit 1
+          fi
+          mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USERNAME }}/msml-model:latest"
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_USER }}/msml-model:latest
