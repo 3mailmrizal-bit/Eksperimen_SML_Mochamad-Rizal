@@ -39,6 +39,7 @@ jobs:
         run: |
           cd Workflow-CI/MLProject
           MODEL_PATH=$(find mlruns -name "ci_model" | head -n 1)
+          
           echo "Model ditemukan di: $MODEL_PATH"
           mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
 
