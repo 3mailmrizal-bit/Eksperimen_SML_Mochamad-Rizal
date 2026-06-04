@@ -1,46 +1,39 @@
 name: Automated Data Preprocessing Pipeline
 
-# 1. Menentukan Kapan Workflow Ini Terpantik (Trigger)
 on:
   push:
     branches:
       - main
     paths:
-      - 'CSS_raw.csv' # Terpantik jika ada perubahan pada data mentah
-      - 'preprocessing/automate_Mochamad-Rizal.py' # Atau jika ada perubahan kode script
-  workflow_dispatch: # Memungkinkan kamu memantik workflow secara manual dari tombol di website GitHub
+      - 'CSS_raw.csv'
+      - 'preprocessing/automate_Mochamad-Rizal.py'
+  workflow_dispatch:
 
 jobs:
   run-pipeline:
-    runs-on: ubuntu-latest # Menggunakan OS Linux gratisan dari GitHub Actions
+    runs-on: ubuntu-latest
 
     steps:
-    # Langkah A: Mengunduh isi repositori GitHub kamu ke komputer virtual
     - name: Checkout Repository
       uses: actions/checkout@v4
-      
-    # Langkah B: Menginstal Python versi 3.12.7 agar sesuai spesifikasi venv kamu
+
     - name: Set up Python 3.12.7
       uses: actions/setup-python@v5
       with:
         python-version: '3.12.7'
-        cache: 'pip' # Mempercepat proses instalasi berikutnya menggunakan cache
 
-    # Langkah C: Menginstal Library yang dibutuhkan (pandas & scikit-learn)
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pandas scikit-learn
 
-    # Langkah D: Mengeksekusi script otomatisasi buatanmu
     - name: Run Preprocessing Script
       run: |
         python preprocessing/automate_Mochamad-Rizal.py
 
-    # Langkah E: Menyimpan & Mengembalikan file dataset terbaru agar bisa di-download (Sesuai Kriteria!)
     - name: Upload Clean Dataset Artifact
       uses: actions/artifacts@v4
       with:
-        name: css-clean-dataset # Nama paket download di GitHub nanti
-        path: preprocessing/CSS_preprocessing.csv # Jalur file yang dikembalikan
-        retention-days: 7 # File akan disimpan oleh GitHub selama 7 hari
+        name: css-clean-dataset
+        path: preprocessing/CSS_preprocessing.csv
+        retention-days: 7
