@@ -39,7 +39,7 @@ jobs:
         run: |
           cd Workflow-CI/MLProject
           RUN_ID=$(ls mlruns/0 | sort -r | head -n 1)
-          mlflow models build-docker -m runs:/$RUN_ID/ci_model -n ${{ secrets.DOCKER_USER }}/msml-model:latest
+          mlflow models build-docker -m "runs:/$RUN_ID/ci_model" -n "${{ secrets.DOCKER_USERNAME }}/msml-model:latest"
 
       - name: Push Docker Image
         run: |
