@@ -43,7 +43,7 @@ jobs:
             echo "Error: Model tidak ditemukan!"
             exit 1
           fi
-          mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USERNAME }}/msml-model:latest"
+          mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
 
       - name: Push Docker Image
         run: |
