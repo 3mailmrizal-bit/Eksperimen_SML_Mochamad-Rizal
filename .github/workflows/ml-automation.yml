@@ -35,7 +35,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-- name: Build Docker Image
+      - name: Build Docker Image
         run: |
           cd Workflow-CI/MLProject
           RUN_ID=$(ls mlruns/0 | sort -r | head -n 1)
