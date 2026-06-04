@@ -1,5 +1,9 @@
 name: Automated Data Preprocessing Pipeline
 
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 on:
   push:
     branches:
@@ -31,11 +35,9 @@ jobs:
       run: |
         python preprocessing/automate_Mochamad-Rizal.py
 
-# Langkah E: Menyimpan & Mengembalikan file dataset terbaru agar bisa di-download
     - name: Upload Clean Dataset Artifact
-      uses: actions/upload-artifact@v4 # <-- INI YANG SUDAH DIPERBAIKI
+      uses: actions/upload-artifact@v4
       with:
         name: css-clean-dataset
         path: preprocessing/CSS_preprocessing.csv
         retention-days: 7
-#
