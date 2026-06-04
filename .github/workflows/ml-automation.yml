@@ -37,12 +37,22 @@ jobs:
 
       - name: Build Docker Image
         run: |
-	        MODEL_PATH=$(find mlruns -name "MLmodel" -exec dirname {} \;)
+          cd Workflow-CI/MLProject
+          
+          # 1. Cari lokasi folder yang berisi file 'MLmodel' di dalam mlruns
+          # Ini adalah cara paling akurat menemukan lokasi model
+          MODEL_PATH=$(find mlruns -name "MLmodel" -exec dirname {} \;)
+          
           echo "Model path ditemukan di: $MODEL_PATH"
+          
+          # 2. Pastikan path ditemukan
           if [ -z "$MODEL_PATH" ]; then
             echo "Error: Model tidak ditemukan!"
             exit 1
           fi
+
+          # 3. Build menggunakan path yang ditemukan (tanpa perlu format runs:/)
+          # Kita gunakan -m dengan path lokal tersebut
           mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
 
       - name: Push Docker Image
