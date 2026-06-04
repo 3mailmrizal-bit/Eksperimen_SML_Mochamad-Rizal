@@ -1,0 +1,30 @@
+name: CI-MLflow-Workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install mlflow pandas scikit-learn
+
+      - name: Run MLflow Project
+        # Ini adalah perintah yang tadi kita tes berhasil di terminal!
+        run: mlflow run Workflow-CI/MLProject --experiment-name "Workflow_CI_Experiment" --env-manager local
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: model-hasil-training
+          path: mlruns/
