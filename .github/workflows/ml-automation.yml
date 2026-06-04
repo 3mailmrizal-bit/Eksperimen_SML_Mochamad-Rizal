@@ -20,11 +20,11 @@ jobs:
         run: pip install mlflow pandas scikit-learn
 
       - name: Run MLflow Project
-        # Ini adalah perintah yang tadi kita tes berhasil di terminal!
+        # Jalankan dari root, mengarah ke folder sub-project
         run: mlflow run Workflow-CI/MLProject --experiment-name "Workflow_CI_Experiment" --env-manager local
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload Model Artifact
+        uses: actions/upload-artifact@v4  # PENTING: Gunakan v4, bukan v3
         with:
           name: model-hasil-training
-          path: mlruns/
+          path: mlruns/  # Folder tempat MLflow menyimpan hasil secara otomatis
