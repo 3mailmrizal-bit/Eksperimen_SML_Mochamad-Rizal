@@ -37,8 +37,12 @@ jobs:
 
       - name: Build Docker Image
         run: |
+
+          LATEST_RUN=$(find mlruns -type d -name "[0-9a-f]*" -path "*/mlruns/*" | sort -r | head -n 1)
+          echo "Latest run folder: $LATEST_RUN"
+          
           mlflow models build-docker \
-            -m "runs:/${{ steps.get_run_id.outputs.run_id }}/model" \
+            -m "$LATEST_RUN/artifacts/model" \
             -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
 
       - name: Push Docker Image
