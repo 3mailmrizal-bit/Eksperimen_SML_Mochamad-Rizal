@@ -23,13 +23,6 @@ jobs:
         run: |
           mlflow run Workflow-CI/MLProject --experiment-name "Workflow_CI_Experiment" --env-manager local
 
-          - name: Get Latest Run ID
-        id: get_run_id
-        run: |
-          LATEST_RUN=$(ls -td mlruns/0/[0-9a-f]* | head -n 1 | xargs basename)
-          echo "run_id=$LATEST_RUN" >> $GITHUB_OUTPUT
-          echo "Latest Run ID: $LATEST_RUN"
-
       - name: Upload Model Artifact to GitHub
         uses: actions/upload-artifact@v4
         with:
