@@ -1,4 +1,4 @@
-name: CI-MLflow-Workflow
+name: CI-MLflow-Workflow-Advance
 
 on:
   push:
@@ -17,14 +17,28 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install mlflow pandas scikit-learn
+        run: pip install mlflow pandas scikit-learn docker
 
-      - name: Run MLflow Project
-        # Jalankan dari root, mengarah ke folder sub-project
+      - name: Run MLflow Project (Training)
         run: mlflow run Workflow-CI/MLProject --experiment-name "Workflow_CI_Experiment" --env-manager local
 
       - name: Upload Model Artifact
-        uses: actions/upload-artifact@v4  # PENTING: Gunakan v4, bukan v3
+        uses: actions/upload-artifact@v4
         with:
           name: model-hasil-training
-          path: mlruns/  # Folder tempat MLflow menyimpan hasil secara otomatis
+          path: mlruns/
+
+      - name: Build and Push Docker Image
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        run: |
+          # Login ke Docker Hub
+          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+          
+          # Build Docker Image menggunakan model hasil training
+          # Pastikan nama image sesuai dengan repositori Docker Hub kamu
+          mlflow models build-docker -m runs:/$(ls mlruns/0 | head -n 1)/ci_model -n $DOCKER_USER/model-hasil-training:latest
+          
+          # Push ke Docker Hub
+          docker push $DOCKER_USER/model-hasil-training:latest
