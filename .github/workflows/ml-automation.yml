@@ -5,40 +5,57 @@ on:
     branches: [ main ]
 
 jobs:
-  train-model:
+  train-and-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # Tetap v4, tapi tambahkan env variable
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5  # Update ke v5
         with:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install mlflow pandas scikit-learn docker
+        run: pip install mlflow==2.11.0 pandas scikit-learn
 
-      - name: Run MLflow Project (Training)
-        run: mlflow run Workflow-CI/MLProject --experiment-name "Workflow_CI_Experiment" --env-manager local
-
-      - name: Upload Model Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: model-hasil-training
-          path: mlruns/
-
-      - name: Build and Push Docker Image
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      - name: Run MLflow Project
         run: |
-          # Login ke Docker Hub
-          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-          
-          # Build Docker Image menggunakan model hasil training
-          # Pastikan nama image sesuai dengan repositori Docker Hub kamu
-          mlflow models build-docker -m runs:/$(ls mlruns/0 | head -n 1)/ci_model -n $DOCKER_USER/model-hasil-training:latest
-          
-          # Push ke Docker Hub
-          docker push $DOCKER_USER/model-hasil-training:latest
+          cd MLProject
+          mlflow run . -P alpha=0.5 -P l1_ratio=0.5 --env-manager local
+
+      - name: Get Latest Run ID
+        id: get_run_id
+        run: |
+          cd MLProject
+          LATEST_RUN=$(ls -td mlruns/0/[0-9a-f]* | head -n 1 | xargs basename)
+          echo "run_id=$LATEST_RUN" >> $GITHUB_OUTPUT
+
+      - name: Upload Model Artifact to GitHub
+        uses: actions/upload-artifact@v4  # Tetap v4
+        with:
+          name: trained-model
+          path: MLProject/mlruns/
+
+      - name: Commit Artifacts to Repo
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add MLProject/mlruns/
+          git commit -m "Save model artifacts from CI run" || echo "No changes"
+          git push
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3  # Update ke v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: |
+          cd MLProject
+          mlflow build-docker . -t ${{ secrets.DOCKER_USERNAME }}/msml-model:latest
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/msml-model:latest
