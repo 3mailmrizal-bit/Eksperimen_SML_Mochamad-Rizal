@@ -38,9 +38,10 @@ jobs:
       - name: Build Docker Image
         run: |
           cd Workflow-CI/MLProject
-          RUN_ID=$(ls mlruns/0 | sort -r | head -n 1)
-          mlflow models build-docker -m "runs:/$RUN_ID/ci_model" -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
-
-      - name: Push Docker Image
+          MODEL_PATH=$(find mlruns -name "ci_model" | head -n 1)
+          echo "Model ditemukan di: $MODEL_PATH"
+          mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
+      
+        - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_USER }}/msml-model:latest
