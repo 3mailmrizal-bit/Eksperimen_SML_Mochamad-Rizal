@@ -31,8 +31,9 @@ jobs:
       run: |
         python preprocessing/automate_Mochamad-Rizal.py
 
+# Langkah E: Menyimpan & Mengembalikan file dataset terbaru agar bisa di-download
     - name: Upload Clean Dataset Artifact
-      uses: actions/artifacts@v4
+      uses: actions/upload-artifact@v4 # <-- INI YANG SUDAH DIPERBAIKI
       with:
         name: css-clean-dataset
         path: preprocessing/CSS_preprocessing.csv
