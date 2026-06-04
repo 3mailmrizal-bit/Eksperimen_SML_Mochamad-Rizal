@@ -35,18 +35,18 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Debug Folder Structure
+      - name: Debug - Check Model Path
         run: |
-          cd Workflow-CI/MLProject
-          ls -R mlruns
-
-      - name: Build Docker Image
-        run: |
-          cd Workflow-CI/MLProject
-          MODEL_PATH=$(find mlruns -name "ci_model" | head -n 1)
-          echo "Model ditemukan di: $MODEL_PATH"
-          mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
-
-      - name: Push Docker Image
-        run: |
-          docker push ${{ secrets.DOCKER_USER }}/msml-model:latest
+          echo "=== Checking mlruns structure ==="
+          find mlruns -type d | head -20
+          
+          echo -e "\n=== Looking for artifacts folder ==="
+          find mlruns -type d -name "artifacts"
+          
+          echo -e "\n=== Checking ci_model folder ==="
+          find mlruns -type d -name "ci_model"
+          
+          echo -e "\n=== Latest run folder ==="
+          LATEST_RUN=$(find mlruns -type d -name "[0-9a-f]*" -path "*/mlruns/*" | sort -r | head -n 1)
+          echo "Latest run: $LATEST_RUN"
+          ls -la $LATEST_RUN/artifacts/ || echo "No artifacts folder found"
