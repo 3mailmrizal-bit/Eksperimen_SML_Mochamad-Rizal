@@ -1,1 +1,3 @@
-venv/ 
+# Mengabaikan folder log lokal MLflow
+mlruns/
+mlflow.db

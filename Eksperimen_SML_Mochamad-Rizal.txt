@@ -1,0 +1,3 @@
+Berikut adalah tautan repositori GitHub untuk memenuhi kriteria submission proyek Automated Data Preprocessing Pipeline:
+
+https://github.com/3mailmrizal-bit/Eksperimen_SML_Mochamad-Rizal

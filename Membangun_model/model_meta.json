@@ -1,0 +1,8 @@
+{
+    "model_type": "RandomForestClassifier",
+    "target_column": "Credit_Mix",
+    "best_parameters": {
+        "max_depth": 10,
+        "n_estimators": 100
+    }
+}
