@@ -42,7 +42,7 @@ jobs:
           
           mlflow models build-docker \
             -m "$LATEST_RUN/artifacts/ci_model" \
-            -n "${{ secrets.DOCKER_USERNAME }}/msml-model:latest"
+            -n "${{ secrets.DOCKER_USERN }}/msml-model:latest"
 
       - name: Push Docker Image
         run: |
