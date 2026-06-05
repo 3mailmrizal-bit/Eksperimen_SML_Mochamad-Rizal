@@ -10,14 +10,14 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 # =================================================================
 # 1. OTOMATISASI SISTEM PENDETEKSI & PENYALIN DATA
 # =================================================================
-sumber_data = '../preprocessing/CSS_preprocessing.csv'
-tujuan_data = 'Membangun_model/CSS_preprocessing.csv'
+sumber_data = 'preprocessing/CSS_preprocessing.csv'
+tujuan_data = 'CSS_preprocessing.csv'
 
-if os.path.exists(sumber_data):
-    shutil.copy(sumber_data, tujuan_data)
-    print("✅ Sukses: Data preprocessing siap digunakan untuk tuning.")
-else:
-    print("❌ Error: File sumber tidak ditemukan.")
+# if os.path.exists(sumber_data):
+#     shutil.copy(sumber_data, tujuan_data)
+#     print("✅ Sukses: Data preprocessing siap digunakan untuk tuning.")
+# else:
+#     print("❌ Error: File sumber tidak ditemukan.")
 
 # =================================================================
 # 2. PENYIAPAN DATA
