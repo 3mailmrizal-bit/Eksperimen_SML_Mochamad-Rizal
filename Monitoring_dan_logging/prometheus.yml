@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s # Mengambil data metrik setiap 5 detik sekali
+
+scrape_configs:
+  - job_name: "mlflow_model_monitoring"
+    static_configs:
+      - targets: ["localhost:8000"] # Mengarah ke port exporter Python kamu

@@ -1,0 +1,1 @@
+mlflow models serve -m "Eksperimen_SML_Mochamad-Rizal\mlruns\2\models\m-144e21a0acac4df994b779f0e0745d4a" --port 5002 --no-conda
