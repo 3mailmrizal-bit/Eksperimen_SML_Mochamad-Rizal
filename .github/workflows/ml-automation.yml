@@ -46,6 +46,8 @@ jobs:
             echo "Error: Model tidak ditemukan!"
             exit 1
           fi
+          echo "FROM ${{ secrets.DOCKER_USER }}/msml-model:latest" > Dockerfile_Final
+          echo "EXPOSE 5000" >> Dockerfile_Final
           mlflow models build-docker -m "$MODEL_PATH" -n "${{ secrets.DOCKER_USER }}/msml-model:latest"
 
       - name: Push Docker Image
